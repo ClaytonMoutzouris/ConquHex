@@ -141,10 +141,10 @@ TextMesh:
   m_FontSize: 48
   m_FontStyle: 0
   m_RichText: 1
-  m_Font: {fileID: 12800000, guid: d53286df91abcbc4297b59e322fdf42c, type: 3}
+  m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   m_Color:
     serializedVersion: 2
-    rgba: 2214592512
+    rgba: 4294967295
 --- !u!114 &11466718
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -191,8 +191,8 @@ SpriteRenderer:
   m_SortingLayerID: 190251093
   m_SortingLayer: -1
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 2f1e27b1fa5640d448dd28633ef31160, type: 3}
-  m_Color: {r: 0, g: 1, b: 0.006896496, a: 0.253}
+  m_Sprite: {fileID: 21300000, guid: d1b8badb7a7aaee4cab0c136c31fd18b, type: 3}
+  m_Color: {r: 0, g: 1, b: 0.006896496, a: 0.716}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

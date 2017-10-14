@@ -269,6 +269,7 @@ public class HexManager : MonoBehaviour {
     {
         HexTileObject hexObj = Instantiate(hexPrefab);
         hexObj.tileData = hexData;
+        hexObj.status = TileStatus.inQueue;
         //hexObj.GetComponentInChildren<TextMesh>(true).text = hexPrototypes_deck[cardName].cardName;
         //hexObj.SetActive(true);
         //hexObj.GetComponent<SpriteRenderer>().color = new Color(Random.Range(0f,1f), Random.Range(0f, 1f), Random.Range(0, 1f));
@@ -388,7 +389,7 @@ public class HexManager : MonoBehaviour {
         SetLayerRecursively(hexTile.gameObject, gameObject.layer);
         hexTile.transform.position = CoordToWorld(x, y);
         //SetLayerRecursively(cardGO, 0);
-
+        hexTile.status = TileStatus.Placed;
         gameBoard[x, y] = hexTile;
         hexTile.x = x;
         hexTile.y = y;
@@ -418,6 +419,7 @@ public class HexManager : MonoBehaviour {
 
         HexTileObject hexTile = Instantiate(hexPrefab);
         hexTile.transform.position = CoordToWorld(x, y);
+        hexTile.status = TileStatus.Placed;
         //SetLayerRecursively(cardGO, 0);
 
         gameBoard[x, y] = hexTile;
