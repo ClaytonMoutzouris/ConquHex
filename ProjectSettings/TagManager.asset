@@ -50,6 +50,9 @@ TagManager:
   - name: UI
     uniqueID: 1540204623
     locked: 0
+  - name: TileQueue
+    uniqueID: 811992737
+    locked: 0
   - name: Default
     uniqueID: 877314401
     locked: 0

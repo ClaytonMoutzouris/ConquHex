@@ -6,6 +6,8 @@ public enum TileStatus { inDeck, inQueue, Selected, Placed };
 
 public class HexTileObject : MonoBehaviour {
 
+    public Color[] colors = new Color[] { Color.red, Color.blue };
+
     public TileStatus status = TileStatus.inDeck;
     public int x;
     public int y;

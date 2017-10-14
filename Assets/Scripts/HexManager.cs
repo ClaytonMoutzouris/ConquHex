@@ -7,13 +7,12 @@ public class HexManager : MonoBehaviour {
 
     public static HexManager current;
     HexTileObject tileToPlace;
-    HexTileObject queuedHex;
+    public HexTileObject queuedHex;
     public GameObject tileBackPrefab;
     public HexTileObject hexPrefab;
     public GameObject legalHexPrefab;
     Dictionary<string, GameObject> legalHexes;
     Dictionary<string, HexTileData> hexPrototypes;
-    Dictionary<string, HexTileData> hexPrototypes_deck;
     Dictionary<string, Sprite> hexSprites;
 
     HexTileObject[,] gameBoard;
@@ -24,8 +23,20 @@ public class HexManager : MonoBehaviour {
 
     //List<HexTileObject> hexQueue;
     public GameObject hexQueue;
-   // public GameObject tileQueueInstance;
+    // public GameObject tileQueueInstance;
 
+    public Dictionary<string, HexTileData> HexPrototypes
+    {
+        get
+        {
+            return hexPrototypes;
+        }
+
+        set
+        {
+            hexPrototypes = value;
+        }
+    }
     // Use this for initialization
     void Start () {
 
@@ -38,13 +49,12 @@ public class HexManager : MonoBehaviour {
 
         CreateHexPrototypes();
         LoadSprites();
+    }
+
+    public void BeginGame()
+    {
+        PlaceSpawnedHex(HexPrototypes["Default"], boardWidth / 2, boardHeight / 2);
         AddCardToQueue();
-
-       PlaceSpawnedHex(hexPrototypes_deck["Default"], boardWidth / 2, boardHeight / 2);
-
-        PlaceSpawnedHex(hexPrototypes_deck["Default"], boardWidth / 2 +1, boardHeight / 2);
-
-        PlaceSpawnedHex(hexPrototypes_deck["Default"], boardWidth / 2 + 1, boardHeight / 2 + 1);
         ShowLegalHexes();
     }
 
@@ -52,7 +62,7 @@ public class HexManager : MonoBehaviour {
     {
         hexSprites = new Dictionary<string, Sprite>();
         //hexSprites = Resources.LoadAll<Sprite>("");
-        foreach(KeyValuePair<string, HexTileData> hex in hexPrototypes)
+        foreach(KeyValuePair<string, HexTileData> hex in HexPrototypes)
         {
             hexSprites.Add(hex.Key, Resources.Load<Sprite>("TileSprite_" + hex.Key));
         }
@@ -96,14 +106,6 @@ public class HexManager : MonoBehaviour {
             Destroy(legalHexes[x + "_" + y]);
             legalHexes.Remove(x + "_" + y);
         }
-        /*		for (int i = 0; i < legalHexes.Count; i++) {
-                    if(legalHexes[i].GetComponent<HexLegal>().x == x && legalHexes[i].GetComponent<HexLegal>().y == y) {
-                        Destroy(legalHexes[i]);
-                        legalHexes.RemoveAt(i);
-                        break;
-                    }
-                }
-        */
 
 
 
@@ -280,6 +282,7 @@ public class HexManager : MonoBehaviour {
         //cardQueue.Add(cardGO.GetComponent<HexCard>());
         queuedHex = hexObj;
         SetLayerRecursively(hexObj.gameObject, hexQueue.layer);
+        //hexObj.GetComponent<SpriteRenderer>().sortingOrder
 
        // RefreshCardQueue();
     }
@@ -287,103 +290,28 @@ public class HexManager : MonoBehaviour {
 
     void AddCardToQueue()
     {
-        HexTileData hexData = hexPrototypes_deck.ElementAt(UnityEngine.Random.Range(0, hexPrototypes_deck.Count)).Value;
+
+        HexTileData hexData = GameManager.current.CurrentPlayer.Deck.GetNextHex();
+        if(hexData != null)
         AddCardToQueue(hexData);
     }
 
     void ProcessTurn()
     {
-        /*
-        //Debug.Log("----------- ProcessTurn -----------");
 
-        // Discard the leftmost card in the queue.
-        for (int i = 0; i < numberPlayableCards - 1; i++)
-        {
-            Destroy(cardQueue[0].gameObject);
-            RemoveFromQueue(cardQueue[0].gameObject);
-        }
-
-        // Draw Two More cards
-        for (int i = 0; i < numberPlayableCards; i++)
-        {
             AddCardToQueue();
-        }
-
-        // Run loop for priority abilities
-        for (int i = 0; i < cardsInPlay.Count; i++)
-        {
-            HexCard c = cardsInPlay[i];
-            if (c.cardAbility_Priority != null)
-            {
-                c.cardAbility_Priority(c);
-            }
-        }
-
-
-        // Collect Income & Growth from all Cards
-
-        for (int i = 0; i < cardsInPlay.Count; i++)
-        {
-            HexCard c = cardsInPlay[i];
-            GameManager.current.ChangeMoney(c, c.income);
-            GameManager.current.ChangeShareValue(c, c.growth);
-            if (c.cardAbility != null)
-            {
-                c.cardAbility(c);
-            }
-            else
-            {
-                //Debug.LogError("Card '"+c.cardName+"' has a null ability.");
-            }
-
-            c.turnsInPlay++;
-        }
-
-        // Shares increase by 10% of cash reserves
-        // NO -- Finance Dept. do this for us!
-        //GameManager.current.shareValue += GameManager.current.money/10f;
-
-        GameManager.current.ChangeTurnsLeft(null, -1);
-
-        // Rounds down
-        int dividend = Mathf.Max((GameManager.current.money - 20) / 5, 0);
-        GameManager.current.ChangeMoney(null, -dividend, false);
-        StatsManager.current.dividends += dividend;
-        GameManager.current.ChangeShareValue(null, dividend);
-
-        if (dividend > 0)
-        {
-            dividendWindow.SetActive(true);
-            dividendWindow.GetComponentInChildren<Text>().text = "Dividends Paid to Investors: $" + dividend + "/month";
-        }
-        else
-        {
-            dividendWindow.SetActive(false);
-        }
-
-        GameManager.current.UpdateTexts();
-
-        if (GameManager.current.IsGameOver())
-        {
-   
-            
-        }
-        else
-        {
-            RefreshCardQueue();
-            BailoutCheck();
-        }
-        */
+        
     }
 
 
     public void PlaceQueuedHex(int x, int y)
     {
 
-        //  if (GameManager.current.IsGameOver())
-        //   return null;
+        if (GameManager.current.IsGameOver())
+            return;
 
         HexTileObject hexTile = queuedHex;
+        GameManager.current.CurrentPlayer.Deck.PlaceHex();
         AddCardToQueue();
         hexTile.transform.SetParent(this.transform);
         SetLayerRecursively(hexTile.gameObject, gameObject.layer);
@@ -460,6 +388,8 @@ public class HexManager : MonoBehaviour {
     const float hex_x_offset = 0.869f;
     const float hex_y_offset = 0.758f;
 
+
+
     public Vector2 CoordToWorld(int x, int y)
     {
         if (y % 2 == 0)
@@ -475,12 +405,11 @@ public class HexManager : MonoBehaviour {
 
         void CreateHexPrototypes()
         {
-            hexPrototypes = new Dictionary<string, HexTileData>();
-            hexPrototypes_deck = new Dictionary<string, HexTileData>();
+            HexPrototypes = new Dictionary<string, HexTileData>();
+            
 
-        hexPrototypes.Add("Default", new HexTileData("Default", new int[6] { 1, 2, 3, 4, 5 ,6 }));
-        hexPrototypes.Add("King", new HexTileData("King", new int[6] { 1, 2, 3, 4, 5, 6 }));
+        HexPrototypes.Add("Default", new HexTileData("Default", new int[6] { 1, 2, 3, 4, 5 ,6 }));
+        HexPrototypes.Add("King", new HexTileData("King", new int[6] { 1, 2, 3, 4, 5, 6 }));
 
-        hexPrototypes_deck = hexPrototypes;
     }
     }
