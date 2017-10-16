@@ -43,7 +43,7 @@ public class GameManager : MonoBehaviour {
         players = new List<Player>();
 		for(int i = 0; i < numPlayers; i++)
         {
-            players.Add(new Player());
+            players.Add(new Player(i));
         }
 
         currentPlayerIndex = 0;

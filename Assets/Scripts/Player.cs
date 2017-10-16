@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Player {
 
+    public static Color[] colors = new Color[] { Color.red, Color.blue };
+    public int index;
     HexDeck deck;
     int score;
 
@@ -33,10 +35,11 @@ public class Player {
         }
     }
 
-    public Player()
+    public Player(int index)
     {
         Deck = new HexDeck();
         Score = 0;
+        this.index = index;
     }
 
    

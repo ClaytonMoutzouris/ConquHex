@@ -53,7 +53,7 @@ public class HexManager : MonoBehaviour {
 
     public void BeginGame()
     {
-        PlaceHexOnBoard(HexPrototypes["Default"], boardWidth / 2, boardHeight / 2);
+        PlaceHexOnBoard(HexPrototypes["Knight"], boardWidth / 2, boardHeight / 2);
         AddCardToQueue();
         ShowLegalHexes();
     }
@@ -271,13 +271,14 @@ public class HexManager : MonoBehaviour {
     {
         HexTileObject hexObj = Instantiate(hexPrefab);
         hexObj.tileData = hexData;
+        hexObj.owner = GameManager.current.getCurrentPlayer();
         hexObj.status = TileStatus.inQueue;
         //hexObj.GetComponentInChildren<TextMesh>(true).text = hexPrototypes_deck[cardName].cardName;
         //hexObj.SetActive(true);
-        //hexObj.GetComponent<SpriteRenderer>().color = new Color(Random.Range(0f,1f), Random.Range(0f, 1f), Random.Range(0, 1f));
+        hexObj.GetComponent<SpriteRenderer>().color = Player.colors[hexObj.owner.index];
         hexObj.GetComponent<SpriteRenderer>().sprite = hexSprites[hexObj.tileData.name];
         hexObj.transform.SetParent(hexQueue.transform);
-        hexObj.transform.localPosition = new Vector3(0, 0, 0);
+        hexObj.transform.localPosition = new Vector3(.5f, 0, 0);
 
         //cardQueue.Add(cardGO.GetComponent<HexCard>());
         queuedHex = hexObj;
@@ -344,6 +345,7 @@ public class HexManager : MonoBehaviour {
 
         CalcLegalHexes(queuedHex);
 
+        GameManager.current.NextPlayer();
         AddCardToQueue();
     }
 
@@ -415,8 +417,8 @@ public class HexManager : MonoBehaviour {
             HexPrototypes = new Dictionary<string, HexTileData>();
             
 
-        HexPrototypes.Add("Default", new HexTileData("Default", new int[6] { 1, 2, 3, 4, 5 ,6 }));
-        HexPrototypes.Add("King", new HexTileData("King", new int[6] { 1, 2, 3, 4, 5, 6 }));
+        HexPrototypes.Add("Knight", new HexTileData("Knight", new int[6] { 1, 2, 3, 4, 5 ,6 }));
+        //HexPrototypes.Add("King", new HexTileData("King", new int[6] { 1, 2, 3, 4, 5, 6 }));
 
     }
     }
