@@ -53,7 +53,7 @@ public class HexManager : MonoBehaviour {
 
     public void BeginGame()
     {
-        PlaceSpawnedHex(HexPrototypes["Default"], boardWidth / 2, boardHeight / 2);
+        PlaceHexOnBoard(HexPrototypes["Default"], boardWidth / 2, boardHeight / 2);
         AddCardToQueue();
         ShowLegalHexes();
     }
@@ -291,75 +291,82 @@ public class HexManager : MonoBehaviour {
     void AddCardToQueue()
     {
 
-        HexTileData hexData = GameManager.current.CurrentPlayer.Deck.GetNextHex();
+        HexTileData hexData = GameManager.current.getCurrentPlayer().Deck.GetNextHex();
         if(hexData != null)
         AddCardToQueue(hexData);
     }
 
-    void ProcessTurn()
+
+
+    public void PlaceQueuedHexOnBoard(int x, int y)
     {
 
-            AddCardToQueue();
-        
-    }
-
-
-    public void PlaceQueuedHex(int x, int y)
-    {
-
-        if (GameManager.current.IsGameOver())
+        if (GameManager.current.IsGameOver)
             return;
 
-        HexTileObject hexTile = queuedHex;
-        GameManager.current.CurrentPlayer.Deck.PlaceHex();
-        AddCardToQueue();
-        hexTile.transform.SetParent(this.transform);
-        SetLayerRecursively(hexTile.gameObject, gameObject.layer);
-        hexTile.transform.position = CoordToWorld(x, y);
-        //SetLayerRecursively(cardGO, 0);
-        hexTile.status = TileStatus.Placed;
-        gameBoard[x, y] = hexTile;
-        hexTile.x = x;
-        hexTile.y = y;
-        tilesInPlay.Add(hexTile);
-
-        //Destroy(cardGO.transform.Find("HexCardBackground(Clone)/TileBackground-Edge").gameObject);
-
-        List<HexTileObject> ns = GetNeighbours(x, y);
-
-        //Debug.Log(cardGO.name + " has " + ns.Count + " neighbours.");
-
-        hexTile.neighbours = ns;
-        foreach (HexTileObject n in ns)
+        if(queuedHex.status == TileStatus.OnBoard)
         {
-            n.neighbours.Add(hexTile);
+            gameBoard[queuedHex.x, queuedHex.y] = null;
         }
+        queuedHex.status = TileStatus.OnBoard;
+        //HexTileObject hexTile = queuedHex;
 
-        CalcLegalHexes(hexTile);
+        queuedHex.transform.SetParent(this.transform);
+        SetLayerRecursively(queuedHex.gameObject, gameObject.layer);
+        queuedHex.transform.position = CoordToWorld(x, y);
+        //SetLayerRecursively(cardGO, 0);
+        //hexTile.status = TileStatus.Placed;
+        gameBoard[x, y] = queuedHex;
+        queuedHex.x = x;
+        queuedHex.y = y;
+        //tilesInPlay.Add(hexTile);
+
 
 
     }
+
+    public void ConfirmHex()
+    {
+        if (queuedHex.status != TileStatus.OnBoard)
+            return;
+        //HexTileObject hexTile = queuedHex;
+        queuedHex.status = TileStatus.Placed;
+        List<HexTileObject> ns = GetNeighbours(queuedHex.x, queuedHex.y);
+
+        Debug.Log(queuedHex + " has " + ns.Count + " neighbours.");
+
+        queuedHex.neighbours = ns;
+
+        foreach (HexTileObject n in ns)
+        {
+            n.neighbours.Add(queuedHex);
+        }
+
+        CalcLegalHexes(queuedHex);
+
+        AddCardToQueue();
+    }
+
     // Place a card that has already been instantiated for us.
-    HexTileObject PlaceSpawnedHex(HexTileData card, int x, int y)
+    HexTileObject PlaceHexOnBoard(HexTileData card, int x, int y)
     {
       //  if (GameManager.current.IsGameOver())
          //   return null;
 
         HexTileObject hexTile = Instantiate(hexPrefab);
         hexTile.transform.position = CoordToWorld(x, y);
-        hexTile.status = TileStatus.Placed;
+        //hexTile.status = TileStatus.Placed;
         //SetLayerRecursively(cardGO, 0);
 
         gameBoard[x, y] = hexTile;
         hexTile.x = x;
         hexTile.y = y;
-        tilesInPlay.Add(hexTile);
+        //tilesInPlay.Add(hexTile);
 
         //Destroy(cardGO.transform.Find("HexCardBackground(Clone)/TileBackground-Edge").gameObject);
 
-        List<HexTileObject> ns = GetNeighbours(x, y);
-
-        //Debug.Log(cardGO.name + " has " + ns.Count + " neighbours.");
+        hexTile.status = TileStatus.Placed;
+        List<HexTileObject> ns = GetNeighbours(hexTile.x, hexTile.y);
 
         hexTile.neighbours = ns;
         foreach (HexTileObject n in ns)

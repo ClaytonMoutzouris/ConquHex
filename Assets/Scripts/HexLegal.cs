@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.EventSystems;
 using UnityEngine;
 
 public class HexLegal : MonoBehaviour {
@@ -42,11 +43,14 @@ public class HexLegal : MonoBehaviour {
 
     void OnMouseUp()
     {
+        if (EventSystem.current.IsPointerOverGameObject())
+            return;
+
         if (isDragging)
             return;
 
         //AudioSource.PlayClipAtPoint(cardDropSound, Camera.main.transform.position);
 
-       HexManager.current.PlaceQueuedHex(x, y);
+       HexManager.current.PlaceQueuedHexOnBoard(x, y);
     }
 }

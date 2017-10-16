@@ -7,25 +7,46 @@ public class HexDeck {
     List<HexTileData> deckList;
     Player owner;
 
+    public List<HexTileData> DeckList
+    {
+        get
+        {
+            return deckList;
+        }
+
+        set
+        {
+            deckList = value;
+        }
+    }
+
     public HexDeck()
     {
-        deckList = new List<HexTileData>();
+        DeckList = new List<HexTileData>();
         BuildDeck();
         Shuffle();
     }
 
+   
+
     public HexTileData GetNextHex()
     {
-        if (deckList.Count > 0)
-            return deckList[0];
+        if (DeckList.Count > 0)
+        {
+            HexTileData nextHex;
+            nextHex = DeckList[0];
+            Debug.Log("Removing");
+            DeckList.RemoveAt(0);
+            return nextHex;
+            
+
+        }
         else
+        {
+
             return null;
+        }
 
-    }
-
-    public void PlaceHex()
-    {
-        deckList.RemoveAt(0);
     }
 
     void BuildDeck()
@@ -35,7 +56,7 @@ public class HexDeck {
             int d = 5;
             while (d > 0)
             {
-                deckList.Add(proto.Value);
+                DeckList.Add(proto.Value);
                 d--;
             }
         }
@@ -47,15 +68,15 @@ public class HexDeck {
 
         HexTileData temp;
 
-        int n = deckList.Count;
+        int n = DeckList.Count;
         for (int i = 0; i < n; i++)
         {
             // NextDouble returns a random number between 0 and 1.
             // ... It is equivalent to Math.random() in Java.
             int r = i + (int)(_random.NextDouble() * (n - i));
-            temp = deckList[r];
-            deckList[r] = deckList[i];
-            deckList[i] = temp;
+            temp = DeckList[r];
+            DeckList[r] = DeckList[i];
+            DeckList[i] = temp;
         }
     }
 

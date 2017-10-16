@@ -8,22 +8,9 @@ public enum GameState {  };
 public class GameManager : MonoBehaviour {
 
     List<Player> players;
-    Player currentPlayer;
+    int currentPlayerIndex;
     public int numPlayers;
-
-    public Player CurrentPlayer
-    {
-        get
-        {
-            return currentPlayer;
-        }
-
-        set
-        {
-            currentPlayer = value;
-        }
-    }
-
+    bool isGameOver = false;
 
     static public GameManager _current;
 	static public GameManager current {
@@ -36,6 +23,19 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
+    public bool IsGameOver
+    {
+        get
+        {
+            return isGameOver;
+        }
+
+        set
+        {
+            isGameOver = value;
+        }
+    }
+
 
     // Use this for initialization
     void Start () {
@@ -46,7 +46,7 @@ public class GameManager : MonoBehaviour {
             players.Add(new Player());
         }
 
-        CurrentPlayer = players[0];
+        currentPlayerIndex = 0;
 
         HexManager.current.BeginGame();
 	}
@@ -56,13 +56,20 @@ public class GameManager : MonoBehaviour {
 		
 	}
 
-    void NextPlayer()
+    public void NextPlayer()
     {
-
+        if(currentPlayerIndex < players.Count - 1)
+        {
+            currentPlayerIndex++;
+        } else
+        {
+            currentPlayerIndex = 0;
+        }
     }
 
-    public bool IsGameOver()
+    public Player getCurrentPlayer()
     {
-        return (currentPlayer.Deck.GetNextHex() == null);
+        return players[currentPlayerIndex];
     }
+
 }
