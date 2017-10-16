@@ -192,14 +192,14 @@ public class HexManager : MonoBehaviour {
 		int right_x_offset = (y % 2); 
 
 
-		tiles.Add( GetHexAt(x-1, y) ); // Left
-		tiles.Add( GetHexAt(x+1, y) ); // Right
-		tiles.Add( GetHexAt(x-1 + right_x_offset, y+1) ); // Top-Left
-		tiles.Add( GetHexAt(x   + right_x_offset, y+1) ); // Top-Right
-		tiles.Add( GetHexAt(x-1 + right_x_offset, y-1) ); // Top-Left
-		tiles.Add( GetHexAt(x   + right_x_offset, y-1) ); // Top-Right
+		tiles.Add( GetHexAt(x-1, y) );                   // Left           -- 0
+		tiles.Add( GetHexAt(x-1 + right_x_offset, y+1) ); // Top-Left      -- 1
+		tiles.Add( GetHexAt(x   + right_x_offset, y+1) ); // Top-Right     -- 2
+        tiles.Add( GetHexAt(x + 1, y) );                // Right           -- 3
+		tiles.Add( GetHexAt(x   + right_x_offset, y-1) ); // Bottom-Right  -- 4
+        tiles.Add(GetHexAt(x - 1 + right_x_offset, y - 1)); // Bottom-Left -- 5
 
-		int i=0;
+        int i=0;
 		while (i < tiles.Count) {
 			if(tiles[i] == null) {
 				tiles.RemoveAt(i);
@@ -334,7 +334,7 @@ public class HexManager : MonoBehaviour {
         queuedHex.status = TileStatus.Placed;
         List<HexTileObject> ns = GetNeighbours(queuedHex.x, queuedHex.y);
 
-        Debug.Log(queuedHex + " has " + ns.Count + " neighbours.");
+        //Debug.Log(queuedHex + " has " + ns.Count + " neighbours.");
 
         queuedHex.neighbours = ns;
 
@@ -345,8 +345,27 @@ public class HexManager : MonoBehaviour {
 
         CalcLegalHexes(queuedHex);
 
+        CalculateScore();
         GameManager.current.NextPlayer();
         AddCardToQueue();
+    }
+
+    public void CalculateScore()
+    {
+        //int index = 0;
+        int score = 0;
+        foreach(HexTileObject n in queuedHex.neighbours)
+        {
+            if (n == null)
+                continue;
+
+            if(queuedHex.owner != n.owner)
+            {
+                score += HexTileData.Battle(queuedHex.tileData.edges[queuedHex.neighbours.IndexOf(n)], n.tileData.edges[n.neighbours.IndexOf(queuedHex)]);
+            }
+        }
+
+        Debug.Log(score);
     }
 
     // Place a card that has already been instantiated for us.
@@ -356,6 +375,7 @@ public class HexManager : MonoBehaviour {
          //   return null;
 
         HexTileObject hexTile = Instantiate(hexPrefab);
+        hexTile.tileData = card;
         hexTile.transform.position = CoordToWorld(x, y);
         //hexTile.status = TileStatus.Placed;
         //SetLayerRecursively(cardGO, 0);
@@ -417,7 +437,7 @@ public class HexManager : MonoBehaviour {
             HexPrototypes = new Dictionary<string, HexTileData>();
             
 
-        HexPrototypes.Add("Knight", new HexTileData("Knight", new int[6] { 1, 2, 3, 4, 5 ,6 }));
+        HexPrototypes.Add("Knight", new HexTileData("Knight", new CombatSymbol[6] { CombatSymbol.Sword, CombatSymbol.Magic, CombatSymbol.Sword, CombatSymbol.Sword, CombatSymbol.Sword, CombatSymbol.Sword }));
         //HexPrototypes.Add("King", new HexTileData("King", new int[6] { 1, 2, 3, 4, 5, 6 }));
 
     }

@@ -35,7 +35,7 @@ public class HexDeck {
         {
             HexTileData nextHex;
             nextHex = DeckList[0];
-            Debug.Log("Removing");
+            //Debug.Log("Removing");
             DeckList.RemoveAt(0);
             return nextHex;
             

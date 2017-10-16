@@ -24,7 +24,10 @@ public class HexTileObject : MonoBehaviour {
         if (EventSystem.current.IsPointerOverGameObject())
             return;
         if (status != TileStatus.Placed)
-        transform.Rotate(new Vector3(0,0,60));
+        {
+            transform.Rotate(new Vector3(0, 0, 60));
+            tileData.RotateEdges();
+        }
     }
 
 }
