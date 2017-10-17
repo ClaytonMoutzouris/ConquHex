@@ -56,7 +56,7 @@ public class HexDeck {
             int d = 5;
             while (d > 0)
             {
-                DeckList.Add(proto.Value);
+                DeckList.Add(proto.Value.Clone());
                 d--;
             }
         }

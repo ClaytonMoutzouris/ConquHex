@@ -13,9 +13,9 @@ public class HexTileObject : MonoBehaviour {
     public int x;
     public int y;
     public List<HexTileObject> neighbours;
+    public Dictionary<Edge, HexTileObject> neighbourPositions;
     public HexTileData tileData;
     public string tileName;
-    public int[] edges;
     public string tileText;
     public Sprite tileSprite;
 
@@ -25,8 +25,8 @@ public class HexTileObject : MonoBehaviour {
             return;
         if (status != TileStatus.Placed)
         {
-            transform.Rotate(new Vector3(0, 0, 60));
-            tileData.RotateEdges();
+            transform.Rotate(new Vector3(0, 0, -60));
+            this.tileData.RotateEdges();
         }
     }
 

@@ -53,7 +53,7 @@ public class HexManager : MonoBehaviour {
 
     public void BeginGame()
     {
-        PlaceHexOnBoard(HexPrototypes["Knight"], boardWidth / 2, boardHeight / 2);
+        PlaceHexOnBoard(HexPrototypes["Knight"].Clone(), boardWidth / 2, boardHeight / 2);
         AddCardToQueue();
         ShowLegalHexes();
     }
@@ -115,7 +115,7 @@ public class HexManager : MonoBehaviour {
         int right_x_offset = (y % 2);
 
         // Create any new HexLegals needed.
-        if (GetHexAt(x - 1, y) == null && GetNeighbours(x - 1, y).Count == 1)
+        if (GetHexAt(x - 1, y) == null  && GetNeighbours(x - 1, y).Count == 1)
         {
             GameObject go = (GameObject)Instantiate(legalHexPrefab, CoordToWorld(x - 1, y), Quaternion.identity);
             go.GetComponent<HexLegal>().x = x - 1;
@@ -193,12 +193,14 @@ public class HexManager : MonoBehaviour {
 
 
 		tiles.Add( GetHexAt(x-1, y) );                   // Left           -- 0
+        
 		tiles.Add( GetHexAt(x-1 + right_x_offset, y+1) ); // Top-Left      -- 1
 		tiles.Add( GetHexAt(x   + right_x_offset, y+1) ); // Top-Right     -- 2
         tiles.Add( GetHexAt(x + 1, y) );                // Right           -- 3
 		tiles.Add( GetHexAt(x   + right_x_offset, y-1) ); // Bottom-Right  -- 4
         tiles.Add(GetHexAt(x - 1 + right_x_offset, y - 1)); // Bottom-Left -- 5
 
+        
         int i=0;
 		while (i < tiles.Count) {
 			if(tiles[i] == null) {
@@ -208,9 +210,25 @@ public class HexManager : MonoBehaviour {
 				i++;
 			}
 		}
+        
 
 		return tiles; // Can contain nulls!
 	}
+
+    public void CalculateNeighbours(HexTileObject hex)
+    {
+
+        int right_x_offset = (hex.y % 2);
+        hex.neighbourPositions = new Dictionary<Edge, HexTileObject>();
+        hex.neighbourPositions.Add(Edge.Left, GetHexAt(hex.x - 1, hex.y)); // Left           -- 0
+
+        hex.neighbourPositions.Add(Edge.TopLeft, GetHexAt(hex.x - 1 + right_x_offset, hex.y + 1)); // Top-Left      -- 1
+        hex.neighbourPositions.Add(Edge.TopRight, GetHexAt(hex.x + right_x_offset, hex.y + 1)); // Top-Right     -- 2
+        hex.neighbourPositions.Add(Edge.Right, GetHexAt(hex.x + 1, hex.y));                // Right           -- 3
+        hex.neighbourPositions.Add(Edge.BottomRight, GetHexAt(hex.x + right_x_offset, hex.y - 1)); // Bottom-Right  -- 4
+        hex.neighbourPositions.Add(Edge.BottomLeft, GetHexAt(hex.x - 1 + right_x_offset, hex.y - 1)); // Bottom-Left -- 5
+    }
+
 
 	// Returns a list of HexLegal spots adjacent to this.
 	List<HexLegal> GetLegalNeighbours(int x, int y) {
@@ -229,6 +247,7 @@ public class HexManager : MonoBehaviour {
 		try{ legals.Add( legalHexes[((x-1) + right_x_offset)+"_"+ (y-1)].GetComponent<HexLegal>() ); } catch {}// Top-Left
 		try{ legals.Add( legalHexes[(x   + right_x_offset)+"_"+ (y-1)].GetComponent<HexLegal>() ); } catch {}// Top-Right
 
+        
 		int i=0;
 		while (i < legals.Count) {
 			if(legals[i] == null) {
@@ -238,7 +257,7 @@ public class HexManager : MonoBehaviour {
 				i++;
 			}
 		}
-
+        
 		return legals; // Can contain nulls!
 	}
 
@@ -250,27 +269,10 @@ public class HexManager : MonoBehaviour {
 	}
 
 
-    void RemoveFromQueue(GameObject cardGO)
-    {
-        if (cardGO == null) // Usually with the bailout or other triggered card.
-            return;
-
-        //hexQueue.Remove(cardGO.GetComponent<HexTileObject>());
-        cardGO.transform.SetParent(null); // I'm Batman
-        /*
-        //Destroy(cardGO);
-        cardGO.GetComponent<PlaceHexButton>().isClickable = false;
-        if (PlaceHexButton.selectedButton == cardGO.GetComponent<PlaceHexButton>())
-        {
-            PlaceHexButton.selectedButton = null;
-        }
-        */
-    }
-
     void AddCardToQueue(HexTileData hexData)
     {
         HexTileObject hexObj = Instantiate(hexPrefab);
-        hexObj.tileData = hexData;
+        hexObj.tileData = hexData.Clone();
         hexObj.owner = GameManager.current.getCurrentPlayer();
         hexObj.status = TileStatus.inQueue;
         //hexObj.GetComponentInChildren<TextMesh>(true).text = hexPrototypes_deck[cardName].cardName;
@@ -281,6 +283,7 @@ public class HexManager : MonoBehaviour {
         hexObj.transform.localPosition = new Vector3(.5f, 0, 0);
 
         //cardQueue.Add(cardGO.GetComponent<HexCard>());
+        //queuedHex.c
         queuedHex = hexObj;
         SetLayerRecursively(hexObj.gameObject, hexQueue.layer);
         //hexObj.GetComponent<SpriteRenderer>().sortingOrder
@@ -334,12 +337,14 @@ public class HexManager : MonoBehaviour {
         queuedHex.status = TileStatus.Placed;
         List<HexTileObject> ns = GetNeighbours(queuedHex.x, queuedHex.y);
 
+        
         //Debug.Log(queuedHex + " has " + ns.Count + " neighbours.");
 
         queuedHex.neighbours = ns;
 
         foreach (HexTileObject n in ns)
         {
+            if(n != null)
             n.neighbours.Add(queuedHex);
         }
 
@@ -352,20 +357,50 @@ public class HexManager : MonoBehaviour {
 
     public void CalculateScore()
     {
-        //int index = 0;
         int score = 0;
-        foreach(HexTileObject n in queuedHex.neighbours)
+        CalculateNeighbours(queuedHex);
+
+        foreach(KeyValuePair<Edge, HexTileObject> n in queuedHex.neighbourPositions)
         {
-            if (n == null)
+            Debug.Log(n.Key.ToString() + " is " + queuedHex.tileData.edges[n.Key].ToString());
+            if (n.Value == null)
                 continue;
 
-            if(queuedHex.owner != n.owner)
+            if(queuedHex.owner != n.Value.owner)
             {
-                score += HexTileData.Battle(queuedHex.tileData.edges[queuedHex.neighbours.IndexOf(n)], n.tileData.edges[n.neighbours.IndexOf(queuedHex)]);
+                score += queuedHex.tileData.Battle(queuedHex.tileData.edges[n.Key], n.Value.tileData.edges[GetCorrespondingEdge(n.Key)]);
             }
         }
 
-        Debug.Log(score);
+        Debug.Log("~~" + score + "~~");
+    }
+
+    public Edge GetCorrespondingEdge(Edge e)
+    {
+        Edge temp = Edge.Left;
+        switch (e)
+        {
+            case Edge.Left:
+                temp = Edge.Right;
+                break;
+            case Edge.TopLeft:
+                temp = Edge.BottomRight;
+                break;
+            case Edge.TopRight:
+                temp = Edge.BottomLeft;
+                break;
+            case Edge.Right:
+                temp = Edge.Left;
+                break;
+            case Edge.BottomRight:
+                temp = Edge.TopLeft;
+                break;
+            case Edge.BottomLeft:
+                temp = Edge.TopRight;
+                break;
+        }
+       // Debug.Log(e.ToString() + " to " + temp.ToString());
+        return temp;
     }
 
     // Place a card that has already been instantiated for us.
@@ -393,7 +428,9 @@ public class HexManager : MonoBehaviour {
         hexTile.neighbours = ns;
         foreach (HexTileObject n in ns)
         {
+            if(n!= null)
             n.neighbours.Add(hexTile);
+            
         }
 
         CalcLegalHexes(hexTile);
@@ -437,7 +474,8 @@ public class HexManager : MonoBehaviour {
             HexPrototypes = new Dictionary<string, HexTileData>();
             
 
-        HexPrototypes.Add("Knight", new HexTileData("Knight", new CombatSymbol[6] { CombatSymbol.Sword, CombatSymbol.Magic, CombatSymbol.Sword, CombatSymbol.Sword, CombatSymbol.Sword, CombatSymbol.Sword }));
+        HexPrototypes.Add("Knight", new HexTileData("Knight", new Dictionary<Edge, CombatSymbol> { { Edge.Left, CombatSymbol.Sword }, { Edge.TopLeft, CombatSymbol.Magic }, { Edge.TopRight, CombatSymbol.Sword },
+        { Edge.Right, CombatSymbol.Sword }, { Edge.BottomRight, CombatSymbol.Sword }, { Edge.BottomLeft, CombatSymbol.Sword }}));
         //HexPrototypes.Add("King", new HexTileData("King", new int[6] { 1, 2, 3, 4, 5, 6 }));
 
     }
