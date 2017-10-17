@@ -26,7 +26,7 @@ public class HexTileObject : MonoBehaviour {
         if (status != TileStatus.Placed)
         {
             transform.Rotate(new Vector3(0, 0, -60));
-            this.tileData.RotateEdges();
+            this.tileData.edges.RotateEdges();
         }
     }
 

@@ -7,10 +7,10 @@ public enum Edge { Left, TopLeft, TopRight, Right, BottomRight, BottomLeft};
 
 public class HexTileData {
 
-    public Dictionary<Edge, CombatSymbol> edges;
+    public HexEdges edges;
     public string name;
 
-    public HexTileData(string name, Dictionary<Edge, CombatSymbol> edges)
+    public HexTileData(string name, HexEdges edges)
     {
         this.edges = edges;
         this.name = name;
@@ -21,7 +21,7 @@ public class HexTileData {
     {
         if (other != null)
         {
-            edges = new Dictionary<Edge, CombatSymbol>(other.edges);
+            edges = other.edges.Clone();
             name = other.name;
         }
     }
@@ -38,16 +38,16 @@ public class HexTileData {
 
     public void RotateEdges()
     {
-        
+        /*
         CombatSymbol temp, previous;
-        previous = edges[(Edge)edges.Count - 1];
+        previous = edges[edges.Count - 1].Symbol;
         for (int j = 0; j < edges.Count; j++)
         {
-            temp = edges[(Edge)j];
-            edges[(Edge)j] = previous;
+            temp = edges[j].Symbol;
+            edges[j] = previous;
             previous = temp;
         }
-        
+        */
         /*
         CombatSymbol temp;
 

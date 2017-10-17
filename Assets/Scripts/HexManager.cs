@@ -362,13 +362,13 @@ public class HexManager : MonoBehaviour {
 
         foreach(KeyValuePair<Edge, HexTileObject> n in queuedHex.neighbourPositions)
         {
-            Debug.Log(n.Key.ToString() + " is " + queuedHex.tileData.edges[n.Key].ToString());
+            //Debug.Log(n.Key.ToString() + " is " + queuedHex.tileData.edges[n.Key].ToString());
             if (n.Value == null)
                 continue;
 
             if(queuedHex.owner != n.Value.owner)
             {
-                score += queuedHex.tileData.Battle(queuedHex.tileData.edges[n.Key], n.Value.tileData.edges[GetCorrespondingEdge(n.Key)]);
+                score += queuedHex.tileData.Battle(queuedHex.tileData.edges.GetEdge(n.Key).Symbol, n.Value.tileData.edges.GetEdge(GetCorrespondingEdge(n.Key)).Symbol);
             }
         }
 
@@ -474,8 +474,7 @@ public class HexManager : MonoBehaviour {
             HexPrototypes = new Dictionary<string, HexTileData>();
             
 
-        HexPrototypes.Add("Knight", new HexTileData("Knight", new Dictionary<Edge, CombatSymbol> { { Edge.Left, CombatSymbol.Sword }, { Edge.TopLeft, CombatSymbol.Magic }, { Edge.TopRight, CombatSymbol.Sword },
-        { Edge.Right, CombatSymbol.Sword }, { Edge.BottomRight, CombatSymbol.Sword }, { Edge.BottomLeft, CombatSymbol.Sword }}));
+        HexPrototypes.Add("Knight", new HexTileData("Knight", new HexEdges(CombatSymbol.Sword, CombatSymbol.Magic, CombatSymbol.Sword, CombatSymbol.Sword, CombatSymbol.Sword, CombatSymbol.Sword)));
         //HexPrototypes.Add("King", new HexTileData("King", new int[6] { 1, 2, 3, 4, 5, 6 }));
 
     }
