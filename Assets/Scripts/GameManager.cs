@@ -11,12 +11,13 @@ public class GameManager : MonoBehaviour {
     int currentPlayerIndex;
     public int numPlayers;
     bool isGameOver = false;
+    //public GameObject scoreboard;
 
     static public GameManager _current;
 	static public GameManager current {
 		get {
 			if(_current == null) {
-				_current = GameObject.FindObjectOfType<GameManager>();
+				_current = FindObjectOfType<GameManager>();
 			}
 
 			return _current;
@@ -71,5 +72,6 @@ public class GameManager : MonoBehaviour {
     {
         return players[currentPlayerIndex];
     }
+
 
 }

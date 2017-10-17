@@ -368,11 +368,11 @@ public class HexManager : MonoBehaviour {
 
             if(queuedHex.owner != n.Value.owner)
             {
-                score += queuedHex.tileData.Battle(queuedHex.tileData.edges.GetEdge(n.Key).Symbol, n.Value.tileData.edges.GetEdge(GetCorrespondingEdge(n.Key)).Symbol);
+                queuedHex.owner.Score += queuedHex.tileData.Battle(queuedHex.tileData.edges.GetEdge(n.Key).Symbol, n.Value.tileData.edges.GetEdge(GetCorrespondingEdge(n.Key)).Symbol);
             }
         }
 
-        Debug.Log("~~" + score + "~~");
+        UIManager.current.UpdateScore(queuedHex.owner.index +1, queuedHex.owner.Score);
     }
 
     public Edge GetCorrespondingEdge(Edge e)
@@ -414,6 +414,7 @@ public class HexManager : MonoBehaviour {
         hexTile.transform.position = CoordToWorld(x, y);
         //hexTile.status = TileStatus.Placed;
         //SetLayerRecursively(cardGO, 0);
+        hexTile.GetComponent<SpriteRenderer>().sprite = hexSprites[card.name];
 
         gameBoard[x, y] = hexTile;
         hexTile.x = x;
