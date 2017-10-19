@@ -473,9 +473,80 @@ public class HexManager : MonoBehaviour {
         void CreateHexPrototypes()
         {
             HexPrototypes = new Dictionary<string, HexTileData>();
-            
 
-        HexPrototypes.Add("Knight", new HexTileData("Knight", new HexEdges(CombatSymbol.Sword, CombatSymbol.Magic, CombatSymbol.Sword, CombatSymbol.Sword, CombatSymbol.Sword, CombatSymbol.Sword)));
+        HexPrototypes.Add("King", new HexTileData("King",
+            new HexEdges(
+                CombatSymbol.Magic, //Left
+                CombatSymbol.Magic, //TopLeft
+                CombatSymbol.Sword, //TopRight
+                CombatSymbol.Shield, //Right
+                CombatSymbol.Shield, //BottomRight
+                CombatSymbol.Sword))); //BottomLeft
+
+        HexPrototypes.Add("Queen", new HexTileData("Queen",
+            new HexEdges(
+                CombatSymbol.Sword, //Left
+                CombatSymbol.Sword, //TopLeft
+                CombatSymbol.Shield, //TopRight
+                CombatSymbol.Magic, //Right
+                CombatSymbol.Magic, //BottomRight
+                CombatSymbol.Shield))); //BottomLeft
+
+        HexPrototypes.Add("Knight", new HexTileData("Knight",
+           new HexEdges(
+               CombatSymbol.Sword, //Left
+               CombatSymbol.Magic, //TopLeft
+               CombatSymbol.Sword, //TopRight
+               CombatSymbol.Sword, //Right
+               CombatSymbol.Sword, //BottomRight
+               CombatSymbol.Sword))); //BottomLeft
+
+        HexPrototypes.Add("Bishop", new HexTileData("Bishop",
+            new HexEdges(
+                CombatSymbol.Magic, //Left
+                CombatSymbol.Magic, //TopLeft
+                CombatSymbol.Shield, //TopRight
+                CombatSymbol.Magic, //Right
+                CombatSymbol.Magic, //BottomRight
+                CombatSymbol.Magic))); //BottomLeft
+
+        HexPrototypes.Add("Rook", new HexTileData("Rook",
+            new HexEdges(
+                CombatSymbol.Shield, //Left
+                CombatSymbol.Sword, //TopLeft
+                CombatSymbol.Shield, //TopRight
+                CombatSymbol.Shield, //Right
+                CombatSymbol.Shield, //BottomRight
+                CombatSymbol.Shield))); //BottomLeft
+
+
+        HexPrototypes.Add("Soldier", new HexTileData("Soldier",
+            new HexEdges(
+                CombatSymbol.Sword, //Left
+                CombatSymbol.Sword, //TopLeft
+                CombatSymbol.Sword, //TopRight
+                CombatSymbol.Shield, //Right
+                CombatSymbol.Shield, //BottomRight
+                CombatSymbol.Shield))); //BottomLeft
+
+        HexPrototypes.Add("Mage", new HexTileData("Mage",
+           new HexEdges(
+               CombatSymbol.Magic, //Left
+               CombatSymbol.Magic, //TopLeft
+               CombatSymbol.Magic, //TopRight
+               CombatSymbol.Sword, //Right
+               CombatSymbol.Sword, //BottomRight
+               CombatSymbol.Sword))); //BottomLeft
+
+        HexPrototypes.Add("Priest", new HexTileData("Priest",
+           new HexEdges(
+               CombatSymbol.Shield, //Left
+               CombatSymbol.Shield, //TopLeft
+               CombatSymbol.Shield, //TopRight
+               CombatSymbol.Magic, //Right
+               CombatSymbol.Magic, //BottomRight
+               CombatSymbol.Magic))); //BottomLeft
+
         //HexPrototypes.Add("King", new HexTileData("King", new int[6] { 1, 2, 3, 4, 5, 6 }));
 
     }

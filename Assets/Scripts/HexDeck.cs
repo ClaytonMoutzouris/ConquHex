@@ -53,18 +53,14 @@ public class HexDeck {
     {
         foreach(KeyValuePair<string, HexTileData> proto in HexManager.current.HexPrototypes)
         {
-            int d = 5;
-            while (d > 0)
-            {
                 DeckList.Add(proto.Value.Clone());
-                d--;
-            }
+        
         }
     }
 
     void Shuffle()
     {
-        System.Random _random = new System.Random();
+       //s System.Random _random = new System.Random();
 
         HexTileData temp;
 
@@ -73,7 +69,9 @@ public class HexDeck {
         {
             // NextDouble returns a random number between 0 and 1.
             // ... It is equivalent to Math.random() in Java.
-            int r = i + (int)(_random.NextDouble() * (n - i));
+           // int r = i + (int)(_random.NextDouble() * (n - i));\
+            int r = i + Random.Range(0, n-i);
+
             temp = DeckList[r];
             DeckList[r] = DeckList[i];
             DeckList[i] = temp;
