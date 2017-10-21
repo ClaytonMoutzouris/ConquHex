@@ -51,9 +51,13 @@ public class HexDeck {
 
     void BuildDeck()
     {
-        foreach(KeyValuePair<string, HexTileData> proto in HexManager.current.HexPrototypes)
+        int i = 0;
+        foreach (KeyValuePair<string, HexTileData> proto in HexManager.current.HexPrototypes)
         {
+            for (i = 0; i < proto.Value.numberInDeck; i++)
+            {
                 DeckList.Add(proto.Value.Clone());
+            }
         
         }
     }

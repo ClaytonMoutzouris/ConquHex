@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class HexManager : MonoBehaviour {
 
+    public static Vector2[] startPos = new Vector2[4] { new Vector2(boardWidth / 2, boardHeight / 2), new Vector2(boardWidth / 2 +1, boardHeight / 2), new Vector2(boardWidth / 2, boardHeight / 2 +1), new Vector2(boardWidth / 2 + 1, boardHeight / 2 +1) };
     public static HexManager current;
     HexTileObject tileToPlace;
     public HexTileObject queuedHex;
@@ -53,9 +54,20 @@ public class HexManager : MonoBehaviour {
 
     public void BeginGame()
     {
-        PlaceHexOnBoard(HexPrototypes["Knight"].Clone(), boardWidth / 2, boardHeight / 2);
+        SetUpBoard();
+        //PlaceHexOnBoard(, boardWidth / 2, boardHeight / 2);
         AddCardToQueue();
         ShowLegalHexes();
+    }
+
+    public void SetUpBoard()
+    {
+        foreach(Player p in GameManager.current.Players)
+        {
+            PlaceStartingHex((int)startPos[p.index].x, (int)startPos[p.index].y, p);
+
+        }
+
     }
 
     void LoadSprites()
@@ -280,7 +292,7 @@ public class HexManager : MonoBehaviour {
         hexObj.GetComponent<SpriteRenderer>().color = Player.colors[hexObj.owner.index];
         hexObj.GetComponent<SpriteRenderer>().sprite = hexSprites[hexObj.tileData.name];
         hexObj.transform.SetParent(hexQueue.transform);
-        hexObj.transform.localPosition = new Vector3(.5f, 0, 0);
+        hexObj.transform.localPosition = new Vector3(1.5f, .2f, 0);
 
         //cardQueue.Add(cardGO.GetComponent<HexCard>());
         //queuedHex.c
@@ -368,53 +380,81 @@ public class HexManager : MonoBehaviour {
 
             if(queuedHex.owner != n.Value.owner)
             {
-                queuedHex.owner.Score += queuedHex.tileData.Battle(queuedHex.tileData.edges.GetEdge(n.Key).Symbol, n.Value.tileData.edges.GetEdge(GetCorrespondingEdge(n.Key)).Symbol);
+                score = queuedHex.tileData.Battle(n.Value.tileData, n.Key);
+                if (score >= 0)
+                {
+                    queuedHex.owner.Score += score;
+                }
+                else
+                {
+                    n.Value.owner.Score += Mathf.Abs(score);
+                    UIManager.current.UpdateScore(n.Value.owner.index + 1, n.Value.owner.Score);
+                }
+            } else
+            {
+                if(queuedHex.tileData.Assist(n.Value.tileData, n.Key))
+                {
+                    queuedHex.owner.Score += 1;
+                }
+
             }
         }
 
         UIManager.current.UpdateScore(queuedHex.owner.index +1, queuedHex.owner.Score);
     }
 
-    public Edge GetCorrespondingEdge(Edge e)
+    public void CalculateScore(HexTileObject hex)
     {
-        Edge temp = Edge.Left;
-        switch (e)
+        int score = 0;
+        CalculateNeighbours(hex);
+
+        foreach (KeyValuePair<Edge, HexTileObject> n in hex.neighbourPositions)
         {
-            case Edge.Left:
-                temp = Edge.Right;
-                break;
-            case Edge.TopLeft:
-                temp = Edge.BottomRight;
-                break;
-            case Edge.TopRight:
-                temp = Edge.BottomLeft;
-                break;
-            case Edge.Right:
-                temp = Edge.Left;
-                break;
-            case Edge.BottomRight:
-                temp = Edge.TopLeft;
-                break;
-            case Edge.BottomLeft:
-                temp = Edge.TopRight;
-                break;
+            //Debug.Log(n.Key.ToString() + " is " + queuedHex.tileData.edges[n.Key].ToString());
+            if (n.Value == null)
+                continue;
+
+            if (hex.owner != n.Value.owner)
+            {
+                score = hex.tileData.Battle(n.Value.tileData, n.Key);
+                if (score >= 0)
+                {
+                    hex.owner.Score += score;
+                }
+                else
+                {
+                    n.Value.owner.Score += Mathf.Abs(score);
+                    UIManager.current.UpdateScore(n.Value.owner.index + 1, n.Value.owner.Score);
+                }
+            }
+            else
+            {
+                if (queuedHex.tileData.Assist(n.Value.tileData, n.Key))
+                {
+                    hex.owner.Score += 1;
+                }
+
+            }
         }
-       // Debug.Log(e.ToString() + " to " + temp.ToString());
-        return temp;
+
+        UIManager.current.UpdateScore(hex.owner.index + 1, hex.owner.Score);
     }
 
+
     // Place a card that has already been instantiated for us.
-    HexTileObject PlaceHexOnBoard(HexTileData card, int x, int y)
+    HexTileObject PlaceStartingHex(int x, int y, Player o)
     {
       //  if (GameManager.current.IsGameOver())
          //   return null;
 
         HexTileObject hexTile = Instantiate(hexPrefab);
-        hexTile.tileData = card;
+        hexTile.tileData = o.Deck.GetNextHex();
         hexTile.transform.position = CoordToWorld(x, y);
+        hexTile.owner = o;
         //hexTile.status = TileStatus.Placed;
         //SetLayerRecursively(cardGO, 0);
-        hexTile.GetComponent<SpriteRenderer>().sprite = hexSprites[card.name];
+        hexTile.GetComponent<SpriteRenderer>().color = Player.colors[hexTile.owner.index];
+        hexTile.GetComponent<SpriteRenderer>().sprite = hexSprites[hexTile.tileData.name];
 
         gameBoard[x, y] = hexTile;
         hexTile.x = x;
@@ -435,7 +475,7 @@ public class HexManager : MonoBehaviour {
         }
 
         CalcLegalHexes(hexTile);
-
+        CalculateScore(hexTile);
         //Destroy( cardGO.GetComponent<PlaceHexButton>() );
 
         return hexTile;
@@ -469,12 +509,12 @@ public class HexManager : MonoBehaviour {
         return new Vector2((x + 0.5f) * hex_x_offset, y * hex_y_offset);
     }
     
-
+    //Create prototypes of all the different types of Hexes. When we make a hex, it uses this as its "card" data.
         void CreateHexPrototypes()
         {
             HexPrototypes = new Dictionary<string, HexTileData>();
 
-        HexPrototypes.Add("King", new HexTileData("King",
+        HexPrototypes.Add("King", new HexTileData("King", 1,
             new HexEdges(
                 CombatSymbol.Magic, //Left
                 CombatSymbol.Magic, //TopLeft
@@ -483,7 +523,16 @@ public class HexManager : MonoBehaviour {
                 CombatSymbol.Shield, //BottomRight
                 CombatSymbol.Sword))); //BottomLeft
 
-        HexPrototypes.Add("Queen", new HexTileData("Queen",
+        HexPrototypes.Add("Wizard", new HexTileData("Wizard", 1,
+            new HexEdges(
+                CombatSymbol.Shield, //Left
+                CombatSymbol.Magic, //TopLeft
+                CombatSymbol.Sword, //TopRight
+                CombatSymbol.Sword, //Right
+                CombatSymbol.Magic, //BottomRight
+                CombatSymbol.Shield))); //BottomLeft
+
+        HexPrototypes.Add("Queen", new HexTileData("Queen", 1,
             new HexEdges(
                 CombatSymbol.Sword, //Left
                 CombatSymbol.Sword, //TopLeft
@@ -492,7 +541,7 @@ public class HexManager : MonoBehaviour {
                 CombatSymbol.Magic, //BottomRight
                 CombatSymbol.Shield))); //BottomLeft
 
-        HexPrototypes.Add("Knight", new HexTileData("Knight",
+        HexPrototypes.Add("Knight", new HexTileData("Knight", 2,
            new HexEdges(
                CombatSymbol.Sword, //Left
                CombatSymbol.Magic, //TopLeft
@@ -501,7 +550,7 @@ public class HexManager : MonoBehaviour {
                CombatSymbol.Sword, //BottomRight
                CombatSymbol.Sword))); //BottomLeft
 
-        HexPrototypes.Add("Bishop", new HexTileData("Bishop",
+        HexPrototypes.Add("Bishop", new HexTileData("Bishop", 2,
             new HexEdges(
                 CombatSymbol.Magic, //Left
                 CombatSymbol.Magic, //TopLeft
@@ -510,7 +559,7 @@ public class HexManager : MonoBehaviour {
                 CombatSymbol.Magic, //BottomRight
                 CombatSymbol.Magic))); //BottomLeft
 
-        HexPrototypes.Add("Rook", new HexTileData("Rook",
+        HexPrototypes.Add("Rook", new HexTileData("Rook", 2,
             new HexEdges(
                 CombatSymbol.Shield, //Left
                 CombatSymbol.Sword, //TopLeft
@@ -520,7 +569,7 @@ public class HexManager : MonoBehaviour {
                 CombatSymbol.Shield))); //BottomLeft
 
 
-        HexPrototypes.Add("Soldier", new HexTileData("Soldier",
+        HexPrototypes.Add("Soldier", new HexTileData("Soldier", 3,
             new HexEdges(
                 CombatSymbol.Sword, //Left
                 CombatSymbol.Sword, //TopLeft
@@ -529,7 +578,7 @@ public class HexManager : MonoBehaviour {
                 CombatSymbol.Shield, //BottomRight
                 CombatSymbol.Shield))); //BottomLeft
 
-        HexPrototypes.Add("Mage", new HexTileData("Mage",
+        HexPrototypes.Add("Mage", new HexTileData("Mage", 3,
            new HexEdges(
                CombatSymbol.Magic, //Left
                CombatSymbol.Magic, //TopLeft
@@ -538,7 +587,7 @@ public class HexManager : MonoBehaviour {
                CombatSymbol.Sword, //BottomRight
                CombatSymbol.Sword))); //BottomLeft
 
-        HexPrototypes.Add("Priest", new HexTileData("Priest",
+        HexPrototypes.Add("Priest", new HexTileData("Priest", 3,
            new HexEdges(
                CombatSymbol.Shield, //Left
                CombatSymbol.Shield, //TopLeft

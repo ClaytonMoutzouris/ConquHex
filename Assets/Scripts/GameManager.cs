@@ -37,18 +37,31 @@ public class GameManager : MonoBehaviour {
         }
     }
 
+    public List<Player> Players
+    {
+        get
+        {
+            return players;
+        }
+
+        set
+        {
+            players = value;
+        }
+    }
+
 
     // Use this for initialization
     void Start () {
 
-        players = new List<Player>();
+        Players = new List<Player>();
 		for(int i = 0; i < numPlayers; i++)
         {
-            players.Add(new Player(i));
+            Players.Add(new Player(i));
         }
 
         currentPlayerIndex = 0;
-
+        UIManager.current.SetActivePlayers(numPlayers);
         HexManager.current.BeginGame();
 	}
 	
@@ -59,7 +72,7 @@ public class GameManager : MonoBehaviour {
 
     public void NextPlayer()
     {
-        if(currentPlayerIndex < players.Count - 1)
+        if(currentPlayerIndex < Players.Count - 1)
         {
             currentPlayerIndex++;
         } else
@@ -70,7 +83,7 @@ public class GameManager : MonoBehaviour {
 
     public Player getCurrentPlayer()
     {
-        return players[currentPlayerIndex];
+        return Players[currentPlayerIndex];
     }
 
 

@@ -8,8 +8,6 @@ using UnityEngine.UI;
 public class UIManager : MonoBehaviour {
 
     public GameObject scoreboard;
-    public Text p1score;
-    public Text p2score;
 
     static public UIManager _current;
     static public UIManager current
@@ -27,6 +25,25 @@ public class UIManager : MonoBehaviour {
 
     public void Start()
     {
+
+    }
+
+    public void SetActivePlayers(int n)
+    {
+        string obj = "";
+        for (int i = 0; i < 4; i++)
+        {
+            obj = "P" + (i + 1) + "Score";
+
+            scoreboard.transform.Find(obj).gameObject.SetActive(false);
+        }
+
+        for (int i = 0; i<n; i++)
+        {
+            obj = "P" + (i + 1) + "Score";
+
+            scoreboard.transform.Find(obj).gameObject.SetActive(true);
+        }
 
     }
 

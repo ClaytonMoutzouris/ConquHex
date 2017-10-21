@@ -9,11 +9,13 @@ public class HexTileData {
 
     public HexEdges edges;
     public string name;
+    public int numberInDeck;
 
-    public HexTileData(string name, HexEdges edges)
+    public HexTileData(string name, int numberInDeck, HexEdges edges)
     {
         this.edges = edges;
         this.name = name;
+        this.numberInDeck = numberInDeck;
 
     }
 
@@ -63,14 +65,47 @@ public class HexTileData {
     */
     }
 
-    public int Battle(CombatSymbol cPlayer, CombatSymbol opponent)
+    public Edge GetCorrespondingEdge(Edge e)
     {
+        Edge temp = Edge.Left;
+        switch (e)
+        {
+            case Edge.Left:
+                temp = Edge.Right;
+                break;
+            case Edge.TopLeft:
+                temp = Edge.BottomRight;
+                break;
+            case Edge.TopRight:
+                temp = Edge.BottomLeft;
+                break;
+            case Edge.Right:
+                temp = Edge.Left;
+                break;
+            case Edge.BottomRight:
+                temp = Edge.TopLeft;
+                break;
+            case Edge.BottomLeft:
+                temp = Edge.TopRight;
+                break;
+        }
+        // Debug.Log(e.ToString() + " to " + temp.ToString());
+        return temp;
+    }
+
+    public int Battle(HexTileData opponent, Edge edge)
+    {
+        CombatSymbol playerSymbol = edges.GetEdge(edge).Symbol;
+        CombatSymbol oppSymbol = opponent.edges.GetEdge(GetCorrespondingEdge(edge)).Symbol;
+
+        //queuedHex.owner.Score += queuedHex.tileData.Battle(queuedHex.tileData.edges.GetEdge(n.Key).Symbol, n.Value.tileData.edges.GetEdge(GetCorrespondingEdge(edge)).Symbol);
+
         int outcome = 0;
-        Debug.Log(cPlayer.ToString() + " versus " + opponent.ToString());
-        switch (cPlayer)
+        Debug.Log(playerSymbol.ToString() + " versus " + opponent.ToString());
+        switch (playerSymbol)
         {
             case CombatSymbol.Magic:
-                switch (opponent)
+                switch (oppSymbol)
                 {
                     case (CombatSymbol.Magic):
                         outcome = 0;
@@ -84,7 +119,7 @@ public class HexTileData {
                 }
                 break;
             case CombatSymbol.Sword:
-                switch (opponent)
+                switch (oppSymbol)
                 {
                     case (CombatSymbol.Magic):
                         outcome = 1;
@@ -98,7 +133,7 @@ public class HexTileData {
                 }
                 break;
             case CombatSymbol.Shield:
-                switch (opponent)
+                switch (oppSymbol)
                 {
                     case (CombatSymbol.Magic):
                         outcome = -1;
@@ -115,6 +150,18 @@ public class HexTileData {
         }
 
         return outcome;
+
+    }
+
+    public bool Assist(HexTileData mate, Edge edge)
+    { 
+
+        if(edges.GetEdge(edge).Symbol == mate.edges.GetEdge(GetCorrespondingEdge(edge)).Symbol)
+        {
+            return true;
+        }
+
+        return false;
 
     }
 
