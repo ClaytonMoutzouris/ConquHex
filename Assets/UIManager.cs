@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class UIManager : MonoBehaviour {
 
     public GameObject scoreboard;
+    public GameObject gameOverScreen;
 
     public List<GameObject> playerScores;
 
@@ -51,5 +52,10 @@ public class UIManager : MonoBehaviour {
         //string obj = "P" + index + "Score";
         playerScores[p.index].GetComponent<Text>().text = p.Name + ": " + p.Score;
         
+    }
+
+    public void GameOver()
+    {
+        gameOverScreen.SetActive(true);
     }
 }

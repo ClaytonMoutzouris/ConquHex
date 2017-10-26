@@ -359,16 +359,22 @@ public class HexManager : MonoBehaviour {
         //Debug.Log(queuedHex + " has " + ns.Count + " neighbours.");
 
         queuedHex.neighbours = ns;
-
+        //lets add this hex to its neighbours neighbours
         foreach (HexTileObject n in ns)
         {
             if(n != null)
             n.neighbours.Add(queuedHex);
         }
-
+        //add the new legal positions created by placing this hex
         CalcLegalHexes(queuedHex);
-
+        //calculate the scoring for placing this hex
         CalculateScore();
+        //Check if the game is over
+        if (GameManager.current.checkGameOver())
+        {
+            return;
+        }
+        //if the game isnt over, get next player
         GameManager.current.NextPlayer();
         AddCardToQueue();
     }

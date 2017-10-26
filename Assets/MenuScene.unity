@@ -262,9 +262,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Player 1
-
-'
+  m_Text: Player 1
 --- !u!222 &58577737
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1953,9 +1951,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Player 4
-
-'
+  m_Text: Player 4
 --- !u!222 &475717524
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2867,9 +2863,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Player 3
-
-'
+  m_Text: Player 3
 --- !u!222 &773344085
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5007,9 +5001,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Player 2
-
-'
+  m_Text: Player 2
 --- !u!222 &1233620541
 CanvasRenderer:
   m_ObjectHideFlags: 0

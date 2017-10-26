@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 
 public enum GameState {  };
@@ -98,6 +99,7 @@ public class GameManager : MonoBehaviour {
 
     public void NextPlayer()
     {
+
         if(currentPlayerIndex < Players.Count - 1)
         {
             currentPlayerIndex++;
@@ -112,5 +114,15 @@ public class GameManager : MonoBehaviour {
         return Players[currentPlayerIndex];
     }
 
+    public bool checkGameOver()
+    {
+        return (Players[Players.Count - 1].Deck.DeckList.Count == 0);
+    }
+
+    public void ReturnToMenu()
+    {
+        SceneManager.LoadScene("MenuScene");
+
+    }
 
 }

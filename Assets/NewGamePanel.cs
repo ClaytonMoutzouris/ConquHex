@@ -52,6 +52,11 @@ public class NewGamePanel : MonoBehaviour {
 
     public string getPlayerInfo(int index)
     {
+        InputField iField = playerPanels[index].GetComponentInChildren<InputField>();
+        if(iField.text == "")
+        {
+            return iField.placeholder.GetComponent<Text>().text;
+        }
         return playerPanels[index].GetComponentInChildren<InputField>().text;
 
     }
