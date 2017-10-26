@@ -9,6 +9,8 @@ public class UIManager : MonoBehaviour {
 
     public GameObject scoreboard;
 
+    public List<GameObject> playerScores;
+
     static public UIManager _current;
     static public UIManager current
     {
@@ -30,29 +32,24 @@ public class UIManager : MonoBehaviour {
 
     public void SetActivePlayers(int n)
     {
-        string obj = "";
         for (int i = 0; i < 4; i++)
         {
-            obj = "P" + (i + 1) + "Score";
-
-            scoreboard.transform.Find(obj).gameObject.SetActive(false);
+            playerScores[i].SetActive(false);
         }
 
         for (int i = 0; i<n; i++)
         {
-            obj = "P" + (i + 1) + "Score";
-
-            scoreboard.transform.Find(obj).gameObject.SetActive(true);
+            playerScores[i].SetActive(true);
         }
 
     }
 
-    public void UpdateScore(int index, int score)
+    public void UpdateScore(Player p)
     {
         //scoreboard.GetComponentInChildren<Text>().
         //newCharacter.transform.Find("Body").GetComponent[MeshRenderer]();
-        string obj = "P" + index + "Score";
-        scoreboard.transform.Find(obj).GetComponent<Text>().text = "Player " + index + ": " + score;
+        //string obj = "P" + index + "Score";
+        playerScores[p.index].GetComponent<Text>().text = p.Name + ": " + p.Score;
         
     }
 }

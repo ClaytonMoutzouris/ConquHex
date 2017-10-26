@@ -39,9 +39,15 @@ public class HexManager : MonoBehaviour {
         }
     }
     // Use this for initialization
-    void Start () {
 
+    public void Start()
+    {
         current = this;
+    }
+
+    public void Init () {
+
+
 
         gameBoard = new HexTileObject[boardWidth, boardHeight];
         legalHexes = new Dictionary<string, GameObject>();
@@ -388,7 +394,7 @@ public class HexManager : MonoBehaviour {
                 else
                 {
                     n.Value.owner.Score += Mathf.Abs(score);
-                    UIManager.current.UpdateScore(n.Value.owner.index + 1, n.Value.owner.Score);
+                    UIManager.current.UpdateScore(n.Value.owner);
                 }
             } else
             {
@@ -400,7 +406,7 @@ public class HexManager : MonoBehaviour {
             }
         }
 
-        UIManager.current.UpdateScore(queuedHex.owner.index +1, queuedHex.owner.Score);
+        UIManager.current.UpdateScore(queuedHex.owner);
     }
 
     public void CalculateScore(HexTileObject hex)
@@ -424,7 +430,7 @@ public class HexManager : MonoBehaviour {
                 else
                 {
                     n.Value.owner.Score += Mathf.Abs(score);
-                    UIManager.current.UpdateScore(n.Value.owner.index + 1, n.Value.owner.Score);
+                    UIManager.current.UpdateScore(n.Value.owner);
                 }
             }
             else
@@ -437,7 +443,7 @@ public class HexManager : MonoBehaviour {
             }
         }
 
-        UIManager.current.UpdateScore(hex.owner.index + 1, hex.owner.Score);
+        UIManager.current.UpdateScore(hex.owner);
     }
 
 

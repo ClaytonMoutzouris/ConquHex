@@ -8,6 +8,7 @@ public class Player {
     public int index;
     HexDeck deck;
     int score;
+    string name;
 
     public HexDeck Deck
     {
@@ -35,12 +36,30 @@ public class Player {
         }
     }
 
-    public Player(int index)
+    public string Name
     {
-        Deck = new HexDeck();
+        get
+        {
+            return name;
+        }
+
+        set
+        {
+            name = value;
+        }
+    }
+
+    public Player(int index, string n)
+    {
+        Name = n;
+        //Deck = new HexDeck();
         Score = 0;
         this.index = index;
     }
 
+    public void makeDeck()
+    {
+        Deck = new HexDeck();
+    }
    
 }

@@ -1701,6 +1701,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scoreboard: {fileID: 2035904352}
+  playerScores:
+  - {fileID: 20171467}
+  - {fileID: 1484754667}
+  - {fileID: 316388635}
+  - {fileID: 111272822}
 --- !u!4 &2056298144
 Transform:
   m_ObjectHideFlags: 0

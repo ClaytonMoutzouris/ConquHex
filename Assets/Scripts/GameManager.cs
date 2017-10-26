@@ -53,20 +53,46 @@ public class GameManager : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+        HexManager.current.Init();
+        StartGame();
+        
+	}
 
+    public void StartGame()
+    {
         Players = new List<Player>();
-		for(int i = 0; i < numPlayers; i++)
+        //If we are loading from the main menu, use the players set up there
+        //otherwise, we have to make some default players (this is mainly for testing)
+        if (GameDataScript.instance != null && GameDataScript.instance.Players.Count > 0)
         {
-            Players.Add(new Player(i));
+            numPlayers = GameDataScript.instance.Players.Count;
+            Players.AddRange(GameDataScript.instance.Players);
+        } else
+        {
+            
+            for (int i = 0; i < numPlayers; i++)
+            {
+                Players.Add(new Player(i, ("Player" + (i+1))));
+            }
+        }
+        
+
+        //Give each player a deck
+        foreach(Player p in Players)
+        {
+            p.makeDeck();
         }
 
         currentPlayerIndex = 0;
         UIManager.current.SetActivePlayers(numPlayers);
         HexManager.current.BeginGame();
-	}
-	
-	// Update is called once per frame
-	void Update () {
+
+    }
+
+
+
+    // Update is called once per frame
+    void Update () {
 		
 	}
 
