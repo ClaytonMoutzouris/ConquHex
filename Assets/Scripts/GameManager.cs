@@ -116,7 +116,16 @@ public class GameManager : MonoBehaviour {
 
     public bool checkGameOver()
     {
-        return (Players[Players.Count - 1].Deck.DeckList.Count == 0);
+        bool result = true;
+        foreach(Player p in Players)
+        {
+            if(p.Deck.DeckList.Count != 0)
+            {
+                result = false;
+            }
+        }
+
+        return result;
     }
 
     public void ReturnToMenu()

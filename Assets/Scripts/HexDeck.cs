@@ -52,6 +52,10 @@ public class HexDeck {
     void BuildDeck()
     {
         int i = 0;
+        //These are here incase i need to test the end of the game quickly
+        //DeckList.Add(HexManager.current.HexPrototypes["King"].Clone());
+        //DeckList.Add(HexManager.current.HexPrototypes["Queen"].Clone());
+        
         foreach (KeyValuePair<string, HexTileData> proto in HexManager.current.HexPrototypes)
         {
             for (i = 0; i < proto.Value.numberInDeck; i++)
@@ -60,6 +64,7 @@ public class HexDeck {
             }
         
         }
+        
     }
 
     void Shuffle()

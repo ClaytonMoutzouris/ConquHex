@@ -298,7 +298,7 @@ public class HexManager : MonoBehaviour {
         hexObj.GetComponent<SpriteRenderer>().color = Player.colors[hexObj.owner.index];
         hexObj.GetComponent<SpriteRenderer>().sprite = hexSprites[hexObj.tileData.name];
         hexObj.transform.SetParent(hexQueue.transform);
-        hexObj.transform.localPosition = new Vector3(1.5f, .2f, 0);
+        hexObj.transform.localPosition = new Vector3(0, 0, 0);
 
         //cardQueue.Add(cardGO.GetComponent<HexCard>());
         //queuedHex.c
@@ -349,6 +349,10 @@ public class HexManager : MonoBehaviour {
 
     public void ConfirmHex()
     {
+        if (GameManager.current.IsGameOver)
+        {
+            return;
+        }
         if (queuedHex.status != TileStatus.OnBoard)
             return;
         //HexTileObject hexTile = queuedHex;
@@ -372,6 +376,8 @@ public class HexManager : MonoBehaviour {
         //Check if the game is over
         if (GameManager.current.checkGameOver())
         {
+            GameManager.current.IsGameOver = true;
+            UIManager.current.GameOver();
             return;
         }
         //if the game isnt over, get next player
