@@ -53,8 +53,9 @@ public class HexDeck {
     {
         int i = 0;
         //These are here incase i need to test the end of the game quickly
-        //DeckList.Add(HexManager.current.HexPrototypes["King"].Clone());
-        //DeckList.Add(HexManager.current.HexPrototypes["Queen"].Clone());
+       // DeckList.Add(HexManager.current.HexPrototypes["King"].Clone());
+       // DeckList.Add(HexManager.current.HexPrototypes["Queen"].Clone());
+        
         
         foreach (KeyValuePair<string, HexTileData> proto in HexManager.current.HexPrototypes)
         {
@@ -64,6 +65,7 @@ public class HexDeck {
             }
         
         }
+        
         
     }
 

@@ -7,7 +7,7 @@ public class Player {
     public static Color[] colors = new Color[] { Color.red, new Color(0, 0.45f, 1), Color.green, Color.yellow };
     public int index;
     HexDeck deck;
-    int score;
+    int score = 0;
     string name;
 
     public HexDeck Deck
@@ -53,11 +53,16 @@ public class Player {
     {
         Name = n;
         //Deck = new HexDeck();
-        Score = 0;
         this.index = index;
     }
 
-    public void makeDeck()
+    public void PrepareForNewGame()
+    {
+        Score = 0;
+        MakeDeck();
+    }
+
+    public void MakeDeck()
     {
         Deck = new HexDeck();
     }

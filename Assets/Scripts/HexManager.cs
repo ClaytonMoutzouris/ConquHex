@@ -58,6 +58,11 @@ public class HexManager : MonoBehaviour {
         LoadSprites();
     }
 
+    public void PlayAgain()
+    {
+
+    }
+
     public void BeginGame()
     {
         SetUpBoard();

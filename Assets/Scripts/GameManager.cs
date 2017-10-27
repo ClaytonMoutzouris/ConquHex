@@ -81,7 +81,7 @@ public class GameManager : MonoBehaviour {
         //Give each player a deck
         foreach(Player p in Players)
         {
-            p.makeDeck();
+            p.PrepareForNewGame();
         }
 
         currentPlayerIndex = 0;
@@ -89,6 +89,7 @@ public class GameManager : MonoBehaviour {
         HexManager.current.BeginGame();
 
     }
+
 
 
 
@@ -131,6 +132,12 @@ public class GameManager : MonoBehaviour {
     public void ReturnToMenu()
     {
         SceneManager.LoadScene("MenuScene");
+
+    }
+
+    public void NewGame()
+    {
+        SceneManager.LoadScene("GameScene");
 
     }
 
