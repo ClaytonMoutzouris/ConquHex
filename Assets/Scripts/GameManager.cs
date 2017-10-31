@@ -62,7 +62,7 @@ public class GameManager : MonoBehaviour {
 
     public void StartGame()
     {
-        AudioManager.current.ChangeTunes(2);
+        //AudioManager.current.ChangeTunes(0);
         Players = new List<Player>();
         //If we are loading from the main menu, use the players set up there
         //otherwise, we have to make some default players (this is mainly for testing)
