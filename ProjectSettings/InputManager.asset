@@ -279,7 +279,7 @@ InputManager:
     joyNum: 0
   - serializedVersion: 3
     m_Name: Cancel
-    descriptiveName: 
+    descriptiveName: Opens the start menu, and such
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: escape

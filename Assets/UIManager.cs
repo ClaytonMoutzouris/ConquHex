@@ -9,7 +9,8 @@ public class UIManager : MonoBehaviour {
 
     public GameObject scoreboard;
     public GameObject gameOverScreen;
-
+    public GameObject pauseScreen;
+    public Text remainingTiles;
     public List<GameObject> playerScores;
 
     static public UIManager _current;
@@ -57,5 +58,25 @@ public class UIManager : MonoBehaviour {
     public void GameOver()
     {
         gameOverScreen.SetActive(true);
+        Text winDisplay = gameOverScreen.GetComponentInChildren<Text>();
+        //This should be a specific reference in the future, rather than relying on the fact that the right text is first
+        winDisplay.text = GameManager.current.getWinner().Name + " is the winner with " + GameManager.current.getWinner().Score + " points!";
+    }
+
+    public void UpdateRemainingTiles()
+    {
+        remainingTiles.text = "Tiles Remaining: " + GameManager.current.getCurrentPlayer().Deck.DeckList.Count;
+    }
+
+    public void PauseMenu()
+    {
+        if (pauseScreen.activeSelf)
+        {
+            pauseScreen.SetActive(false);
+        } else
+        {
+            pauseScreen.SetActive(true);
+
+        }
     }
 }

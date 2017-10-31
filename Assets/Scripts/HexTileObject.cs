@@ -23,7 +23,23 @@ public class HexTileObject : MonoBehaviour {
     {
         if (EventSystem.current.IsPointerOverGameObject())
             return;
+        if (MouseManager.IsDragging)
+            return;
         if (status != TileStatus.Placed)
+        {
+            RotateHex();   
+        }
+    }
+
+    public void RotateHex()
+    {
+        transform.Rotate(new Vector3(0, 0, -60));
+        this.tileData.edges.RotateEdges();
+    }
+
+    public void RotateHex(int n)
+    {
+        for (int i = 0; i < n; i++)
         {
             transform.Rotate(new Vector3(0, 0, -60));
             this.tileData.edges.RotateEdges();

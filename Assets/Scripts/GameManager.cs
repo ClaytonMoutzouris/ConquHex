@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 
-public enum GameState {  };
+public enum GameState { Active, Paused };
 
 public class GameManager : MonoBehaviour {
 
@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour {
     int currentPlayerIndex;
     public int numPlayers;
     bool isGameOver = false;
+    GameState state = GameState.Active;
     //public GameObject scoreboard;
 
     static public GameManager _current;
@@ -95,8 +96,16 @@ public class GameManager : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-		
+        if (Input.GetButtonDown("Cancel"))
+        {
+            Pause();
+        }
 	}
+
+    void Pause()
+    {
+        UIManager.current.PauseMenu();
+    }
 
     public void NextPlayer()
     {
@@ -108,6 +117,9 @@ public class GameManager : MonoBehaviour {
         {
             currentPlayerIndex = 0;
         }
+
+        //UIManager.current.UpdateRemainingTiles();
+
     }
 
     public Player getCurrentPlayer()
@@ -139,6 +151,20 @@ public class GameManager : MonoBehaviour {
     {
         SceneManager.LoadScene("GameScene");
 
+    }
+
+    public Player getWinner()
+    {
+        Player winner = players[0];
+        
+
+        foreach(Player p in players)
+        {
+            if (p.Score > winner.Score)
+                winner = p;
+        }
+
+        return winner;
     }
 
 }

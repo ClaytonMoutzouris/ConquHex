@@ -37,6 +37,7 @@ public class HexDeck {
             nextHex = DeckList[0];
             //Debug.Log("Removing");
             DeckList.RemoveAt(0);
+            UIManager.current.UpdateRemainingTiles();
             return nextHex;
             
 
@@ -53,7 +54,7 @@ public class HexDeck {
     {
         int i = 0;
         //These are here incase i need to test the end of the game quickly
-       // DeckList.Add(HexManager.current.HexPrototypes["King"].Clone());
+       //DeckList.Add(HexManager.current.HexPrototypes["King"].Clone());
        // DeckList.Add(HexManager.current.HexPrototypes["Queen"].Clone());
         
         

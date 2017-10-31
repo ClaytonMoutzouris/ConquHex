@@ -9,8 +9,7 @@ public class HexLegal : MonoBehaviour {
     public int y;
 
     public List<HexLegal> legalNeighbours;
-    bool isDragging = false;
-    Vector3 lastMousePos;
+
 
     // Use this for initialization
     void Start () {
@@ -19,26 +18,7 @@ public class HexLegal : MonoBehaviour {
 
     void Update()
     {
-        if (Input.GetMouseButton(0) == false)
-        {
-            isDragging = false;
-        }
-        else
-        {
-            if (Input.GetMouseButtonDown(0))
-            {
-                // Just went down this frame.
-            }
-            else
-            {
-                if (lastMousePos != Input.mousePosition)
-                {
-                    isDragging = true;
-                }
-            }
-        }
 
-        lastMousePos = Input.mousePosition;
     }
 
     void OnMouseUp()
@@ -46,7 +26,7 @@ public class HexLegal : MonoBehaviour {
         if (EventSystem.current.IsPointerOverGameObject())
             return;
 
-        if (isDragging)
+        if (MouseManager.IsDragging)
             return;
 
         //AudioSource.PlayClipAtPoint(cardDropSound, Camera.main.transform.position);

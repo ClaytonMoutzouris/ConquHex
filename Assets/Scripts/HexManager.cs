@@ -309,9 +309,11 @@ public class HexManager : MonoBehaviour {
         //queuedHex.c
         queuedHex = hexObj;
         SetLayerRecursively(hexObj.gameObject, hexQueue.layer);
+        
+
         //hexObj.GetComponent<SpriteRenderer>().sortingOrder
 
-       // RefreshCardQueue();
+        // RefreshCardQueue();
     }
 
 
@@ -483,6 +485,8 @@ public class HexManager : MonoBehaviour {
         hexTile.x = x;
         hexTile.y = y;
         //tilesInPlay.Add(hexTile);
+
+        hexTile.RotateHex(Random.Range(0, 6));
 
         //Destroy(cardGO.transform.Find("HexCardBackground(Clone)/TileBackground-Edge").gameObject);
 
