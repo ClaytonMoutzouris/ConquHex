@@ -114,7 +114,7 @@ public class HexTileData {
                         outcome = -1;                   
                         break;
                     case (CombatSymbol.Shield):
-                        outcome = 1;
+                        outcome = 2;
                         break;
                 }
                 break;

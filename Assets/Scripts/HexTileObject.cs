@@ -35,6 +35,8 @@ public class HexTileObject : MonoBehaviour {
     {
         transform.Rotate(new Vector3(0, 0, -60));
         this.tileData.edges.RotateEdges();
+        AudioSource.PlayClipAtPoint(AudioManager.current.soundFX[1], Camera.main.transform.position, 0.5f);
+
     }
 
     public void RotateHex(int n)

@@ -364,6 +364,8 @@ public class HexManager : MonoBehaviour {
             return;
         //HexTileObject hexTile = queuedHex;
         queuedHex.status = TileStatus.Placed;
+        
+
         List<HexTileObject> ns = GetNeighbours(queuedHex.x, queuedHex.y);
 
         
@@ -380,6 +382,7 @@ public class HexManager : MonoBehaviour {
         CalcLegalHexes(queuedHex);
         //calculate the scoring for placing this hex
         CalculateScore();
+        AudioSource.PlayClipAtPoint(AudioManager.current.soundFX[3], Camera.main.transform.position, 0.5f);
         //Check if the game is over
         if (GameManager.current.checkGameOver())
         {
@@ -394,7 +397,7 @@ public class HexManager : MonoBehaviour {
 
     public void CalculateScore()
     {
-        int score = 0;
+        int outcome = 0;
         CalculateNeighbours(queuedHex);
 
         foreach(KeyValuePair<Edge, HexTileObject> n in queuedHex.neighbourPositions)
@@ -405,14 +408,14 @@ public class HexManager : MonoBehaviour {
 
             if(queuedHex.owner != n.Value.owner)
             {
-                score = queuedHex.tileData.Battle(n.Value.tileData, n.Key);
-                if (score >= 0)
+                outcome = queuedHex.tileData.Battle(n.Value.tileData, n.Key);
+                if (outcome > 0)
                 {
-                    queuedHex.owner.Score += score;
+                    queuedHex.owner.Score += 2;
                 }
-                else
+                else if (outcome < 0)
                 {
-                    n.Value.owner.Score += Mathf.Abs(score);
+                    n.Value.owner.Score += 2;
                     UIManager.current.UpdateScore(n.Value.owner);
                 }
             } else

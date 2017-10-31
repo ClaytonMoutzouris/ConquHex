@@ -6,7 +6,6 @@ public class GameDataScript : MonoBehaviour {
 
     static public GameDataScript instance;
     List<Player> players = new List<Player>();
-
     public List<Player> Players
     {
         get

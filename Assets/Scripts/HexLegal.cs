@@ -30,7 +30,16 @@ public class HexLegal : MonoBehaviour {
             return;
 
         //AudioSource.PlayClipAtPoint(cardDropSound, Camera.main.transform.position);
+        if (HexManager.current.queuedHex.status != TileStatus.OnBoard)
+        {
+            AudioSource.PlayClipAtPoint(AudioManager.current.soundFX[2], Camera.main.transform.position, 0.5f);
+        } else
+        {
+            AudioSource.PlayClipAtPoint(AudioManager.current.soundFX[1], Camera.main.transform.position, 0.5f);
 
-       HexManager.current.PlaceQueuedHexOnBoard(x, y);
+        }
+
+        HexManager.current.PlaceQueuedHexOnBoard(x, y);
+
     }
 }
