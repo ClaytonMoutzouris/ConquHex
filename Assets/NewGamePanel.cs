@@ -49,12 +49,17 @@ public class NewGamePanel : MonoBehaviour {
     {
         int i = 0;
         int n = getNumPlayers();
+
         foreach(GameObject go in playerPanels)
         {
             if (i < n)
+            {
                 go.SetActive(true);
+            }
             else
+            {
                 go.SetActive(false);
+            }
 
             i++;
         }
