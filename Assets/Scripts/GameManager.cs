@@ -75,7 +75,7 @@ public class GameManager : MonoBehaviour {
             
             for (int i = 0; i < numPlayers; i++)
             {
-                Players.Add(new Player(i, ("Player" + (i+1))));
+                Players.Add(new Player(i, ("Player" + (i+1)), Player.colors[i]));
             }
         }
         

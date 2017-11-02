@@ -300,7 +300,7 @@ public class HexManager : MonoBehaviour {
         hexObj.status = TileStatus.inQueue;
         //hexObj.GetComponentInChildren<TextMesh>(true).text = hexPrototypes_deck[cardName].cardName;
         //hexObj.SetActive(true);
-        hexObj.GetComponent<SpriteRenderer>().color = Player.colors[hexObj.owner.index];
+        hexObj.GetComponent<SpriteRenderer>().color = hexObj.owner.pColor;
         hexObj.GetComponent<SpriteRenderer>().sprite = hexSprites[hexObj.tileData.name];
         hexObj.transform.SetParent(hexQueue.transform);
         hexObj.transform.localPosition = new Vector3(0, 0, 0);
@@ -481,7 +481,7 @@ public class HexManager : MonoBehaviour {
         hexTile.owner = o;
         //hexTile.status = TileStatus.Placed;
         //SetLayerRecursively(cardGO, 0);
-        hexTile.GetComponent<SpriteRenderer>().color = Player.colors[hexTile.owner.index];
+        hexTile.GetComponent<SpriteRenderer>().color = hexTile.owner.pColor;
         hexTile.GetComponent<SpriteRenderer>().sprite = hexSprites[hexTile.tileData.name];
 
         gameBoard[x, y] = hexTile;
